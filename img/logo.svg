@@ -1,6 +1,16 @@
 <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
 	 width="100%" viewBox="0 0 1024 544" enable-background="new 0 0 1024 544" xml:space="preserve">
-<path fill="#000000" opacity="1.000000" stroke="none" 
+<style>
+	:root {
+		color-scheme: light dark;
+        --color: light-dark(#1D1D1F, #E3F2FD);
+    }
+	path {
+        fill: var(--color);
+		transition: fill 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+    }
+</style>
+<path opacity="1.000000" stroke="none" 
 	d="
 M679.052307,445.408936 
 	C659.314514,446.409149 639.989197,445.885895 620.671692,445.896454 
