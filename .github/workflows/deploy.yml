@@ -1,41 +1,36 @@
-name: Build and Deploy to Release Branch
+name: Deploy → release
 
 on:
   push:
-    branches:
-      - main
+    branches: [main]
+    paths:
+      - 'src/scss/**'
+      - 'assets/**'
+      - 'templates/**'
+      - 'package.json'
 
 permissions:
   contents: write
 
 jobs:
-  build-and-release:
+  deploy:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout Source Code
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '22'
+      - run: bun install
+      - run: bun run build
 
-      - name: Install Dependencies
-        run: npm install
-
-      - name: Build and Prepare
+      - name: Assemble dist
         run: |
-          npm run build
-          
-          cp -r assets dist/
-          cp -r templates dist/
-          cp README.md dist/
-          
-          ls -R dist/
+          mkdir -p dist/static/css
+          cp -r static/css/. dist/static/css/
+          cp -r assets        dist/
+          cp -r templates     dist/
+          cp README.md        dist/
 
-      - name: Deploy to Release Branch
-        uses: JamesIves/github-pages-deploy-action@v4
+      - uses: JamesIves/github-pages-deploy-action@v4
         with:
           branch: release
           folder: dist
