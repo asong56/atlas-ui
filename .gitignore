@@ -2,3 +2,5 @@ node_modules/
 dist/
 
 static/css/*.map
+
+package-lock.json
