@@ -4,7 +4,6 @@ Personal toolkit. Three things in one place.
 
 | Directory | What it is |
 |-----------|-----------|
-| [`design/`](./design/) | Design system — tokens, fonts, philosophy |
 | [`src/scss/`](./src/scss/) | SCSS implementation of the design system (npm: `@asong56/nepenthe`) |
 | [`lib/`](./lib/) | Stroma.js — lightweight SEO meta tag generator |
 | [`userscript/`](./userscript/) | Browser userscripts |
