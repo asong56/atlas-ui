@@ -586,7 +586,11 @@
     return new Proxy(state, {
       get(target, key) {
         if (key === 'subscribe') {
-          return (k, fn) => ((listeners.get(k) ?? listeners.set(k, new Set()).get(k)).add(fn), () => listeners.get(k)?.delete(fn));
+          return (k, fn) => {
+            if (!listeners.has(k)) listeners.set(k, new Set());
+            listeners.get(k).add(fn);
+            return () => listeners.get(k)?.delete(fn);
+          };
         }
         if (key === 'subscribeAll') return (fn) => (wildcard.add(fn), () => wildcard.delete(fn));
         return target[key];
@@ -716,14 +720,24 @@
   const VIDEO_PREVIEW_URL = 'https://api.bilibili.com/x/player/videoshot';
 
   async function getCurrentUser() {
-    const res = await fetch(NAV_URL, { credentials: 'same-origin' }).then((r) => r.json());
-    return res?.data?.isLogin ? { avatarUrl: res.data.face } : null;
+    try {
+      const res = await fetch(NAV_URL, { credentials: 'same-origin' }).then((r) => r.json());
+      return res?.data?.isLogin ? { avatarUrl: res.data.face } : null;
+    } catch (e) {
+      console.warn('[Bewlias] getCurrentUser failed:', e);
+      return null;
+    }
   }
 
   // 是否有未读消息：锁死为纯圆点展示，只需要布尔值
   async function hasUnreadMessages() {
-    const d = (await fetch(UNREAD_MSG_URL, { credentials: 'same-origin' }).then((r) => r.json()))?.data;
-    return !!d && d.at + d.chat + d.like + d.reply + d.sys_msg > 0;
+    try {
+      const d = (await fetch(UNREAD_MSG_URL, { credentials: 'same-origin' }).then((r) => r.json()))?.data;
+      return !!d && d.at + d.chat + d.like + d.reply + d.sys_msg > 0;
+    } catch (e) {
+      console.warn('[Bewlias] hasUnreadMessages failed:', e);
+      return false;
+    }
   }
 
   async function getRecommendVideos({ mode, freshIdx, lastShowlist, pageSize = 12 }) {
@@ -809,7 +823,7 @@
   const AV_MASK = (1n << 51n) - 1n;
 
   function bv2av(bv) {
-    if (!bv.startsWith('BV1')) return bv;
+    if (!/^BV1[\dA-Za-z]{9}$/.test(bv)) return bv;
     const chars = [...bv];
     [chars[3], chars[9]] = [chars[9], chars[3]];
     [chars[4], chars[7]] = [chars[7], chars[4]];

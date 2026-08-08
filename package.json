@@ -25,7 +25,7 @@
   "scripts": {
     "build":          "sass --style=compressed src/scss:static/css",
     "watch":          "sass --watch src/scss:static/css",
-    "build:stroma":   "tsup src/js/stroma.js --format esm,cjs --dts --minify --clean --out-dir dist/stroma",
+    "build:stroma":   "tsup lib/stroma.js --format esm,cjs --dts --minify --clean --out-dir dist/stroma",
     "prepublishOnly": "bun run build"
   },
   "keywords": [
